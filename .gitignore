@@ -104,3 +104,6 @@ dist
 .tern-port
 # IDE stuff...
 .idea/
+# Gitignore and readme
+ .gitignore
+ README.md
