@@ -1,4 +1,5 @@
 'use strict';
+const {request} = require('express');
 const users = [
   {
     id: '1',
@@ -13,7 +14,11 @@ const users = [
     password: 'qwer',
   },
 ];
-
+const getUser = (userId) => {
+// TODO find single cat objecty from cats-array and return it
+  return users.filter(val => val.id == userId);
+};
 module.exports = {
   users,
+  getUser
 };
