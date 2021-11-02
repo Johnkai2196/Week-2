@@ -1,28 +1,32 @@
 'use strict';
-const {request} = require('express');
-const cats = [
-  {
-    id: '1',
-    name: 'Frank',
-    birthdate: '2010-10-30',
-    weight: '5',
-    owner: '1',
-    filename: 'http://placekitten.com/400/300',
-  },
-  {
-    id: '2',
-    name: 'James',
-    birthdate: '2015-12-25',
-    weight: '11',
-    owner: '2',
-    filename: 'http://placekitten.com/400/302',
-  },
-];
-const getCat = (catId) => {
+const pool = require('../database/db');
+const promisePool = pool.promise();
+
+const getCat = async (catId) => {
 // TODO find single cat objecty from cats-array and return it
-  return cats.filter(val => val.id == catId);
+  console.log(catId)
+  try {
+    const [rows] = await promisePool.query(
+        `SELECT * FROM wop_cat where cat_id =${catId}`);
+    console.log(rows)
+    return rows;
+  } catch (e) {
+    console.error('error', e.message);
+  }
+//  return cats.filter(val => val.id == catId);
+};
+
+const getAllCats = async () => {
+  try {
+    // TODO: do the LEFT (or INNER) JOIN to get owner's name as ownername (from wop_user table).
+    const [rows] = await promisePool.query('SELECT * FROM wop_cat');
+
+    return rows;
+  } catch (e) {
+    console.error('error', e.message);
+  }
 };
 module.exports = {
-  cats,
+  getAllCats,
   getCat,
 };

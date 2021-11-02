@@ -13,12 +13,17 @@ const users = [
     email: 'jane@metropolia.fi',
     password: 'qwer',
   },
-];
+];/*
+
 const getUser = (userId) => {
 // TODO find single cat objecty from cats-array and return it
-  return users.filter(val => val.id == userId);
+  return users.filter(val => val.id === userId);
 };
+*/
+
+const getUser = (userId) => users.find(user => userId === user.id);
+
 module.exports = {
   users,
-  getUser
+  getUser,
 };
