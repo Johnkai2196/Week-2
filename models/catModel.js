@@ -1,4 +1,5 @@
 'use strict';
+const {request} = require('express');
 const cats = [
   {
     id: '1',
@@ -17,7 +18,11 @@ const cats = [
     filename: 'http://placekitten.com/400/302',
   },
 ];
-
+const getCat = (catId) => {
+// TODO find single cat objecty from cats-array and return it
+  return cats.filter(val => val.id == catId);
+};
 module.exports = {
   cats,
+  getCat,
 };
