@@ -47,8 +47,8 @@ const getAllUsers = async () => {
 const insertUser = async (user) => {
   try {
     const [rows] = await promisePool.execute(
-        'INSERT INTO `wop_user` (name, email, password, role) VALUES (?,?,?)',
-        [user.name, user.email, user.password]);
+        'INSERT INTO `wop_user` (name, email, password) VALUES (?,?,?)',
+        [user.name, user.email, user.passwd]);
     console.log('model insert user', rows);
     return rows.insertId;
   } catch (e) {
@@ -70,8 +70,8 @@ const deleteUser = async (userId) => {
 const updateUser = async (user) => {
   try {
     const [rows] = await promisePool.execute(
-        `UPDATE wop_user SET name=?, email=?, password=?, role=?  WHERE user_id=?`,
-        [user.name, user.email, user.password, user.role, user.id]);
+        `UPDATE wop_user SET name=?, email=?, password=?  WHERE user_id=?`,
+        [user.name, user.email, user.password, user.id]);
     console.log('model update user',rows);
     return rows.affectedRows === 1;
   } catch (e) {
