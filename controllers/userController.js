@@ -1,7 +1,8 @@
 'use strict';
 //userController
-const {users,getUser} = require('../models/userModel');
+const {getAllUsers,getUser,insertUser, deleteUser, updateUser} = require('../models/userModel');
 
+/*
 const user_list_get = (req, res) => {
   // another style making a new array
   const newUser =users.map((user)=>{
@@ -10,19 +11,39 @@ const user_list_get = (req, res) => {
 
   res.json(users);
 };
-const user_get = (req, res) => {
-  const user = getUser(req.params.userId);
-  //working
-  delete user.password;
+
+ */
+const user_list_get = async (req, res) => {
+  const users = await getAllUsers();
+  console.log('all users', users);
+  res.json(users);
+};
+const user_get = async (req, res) => {
+  const user = await getUser(req.params.userId);
+  //delete user.password;
   res.json(user);
 };
-const user_post=(req,res)=> {
-  console.log('add user data',req.body)
-  res.send('From this endpoint you can add users.');
+const user_post=async (req, res) => {
+  console.log('add user data', req.body)
+  const id = await insertUser(req.body)
+  res.send(`cat added with id ${id}`);
+  res.json(id)
 }
+const user_delete = async (req, res) => {
+  const deleted = await deleteUser(req.params.catId);
+  res.json({message: `user deleted:${deleted}`});
+};
+const user_update = async (req, res) => {
+  console.log("controller update user",req.body);
+  const updated = await updateUser(req.body);
+  console.log(updated)
+  res.json({message: `user updated: ${updated}`});
+};
 
 module.exports = {
   user_list_get,
   user_get,
   user_post,
+  user_delete,
+  user_update
 };
