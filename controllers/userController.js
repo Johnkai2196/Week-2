@@ -20,17 +20,17 @@ const user_list_get = async (req, res) => {
 };
 const user_get = async (req, res) => {
   const user = await getUser(req.params.userId);
-  //delete user.password;
   res.json(user);
 };
 const user_post=async (req, res) => {
   console.log('add user data', req.body)
-  const id = await insertUser(req.body)
+  const user= req.body
+  const id = await insertUser(user)
   res.send(`cat added with id ${id}`);
   res.json(id)
 }
 const user_delete = async (req, res) => {
-  const deleted = await deleteUser(req.params.catId);
+  const deleted = await deleteUser(req.params.userId);
   res.json({message: `user deleted:${deleted}`});
 };
 const user_update = async (req, res) => {
