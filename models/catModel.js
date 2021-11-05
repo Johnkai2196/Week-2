@@ -20,7 +20,6 @@ const getAllCats = async () => {
   try {
     // TODO: do the LEFT (or INNER) JOIN to get owner's name as ownername (from wop_user table).
     const [rows] = await promisePool.query('SELECT * FROM wop_cat');
-
     return rows;
   } catch (e) {
     console.error('error', e.message);
@@ -39,8 +38,19 @@ const insertCat = async (cat) => {
     console.error('model insert cat', e.message);
   }
 };
+const deleteCat = async (catId) => {
+  try {
+    const [rows] = await promisePool.execute(
+        'DELETE FROM wop_cat WHERE cat_id=?', [catId]);
+    console.log('model delete cat', rows);
+    return true;
+  } catch (e) {
+    console.error('model delete cat', e.message);
+  }
+};
 module.exports = {
   getAllCats,
   getCat,
   insertCat,
+  deleteCat,
 };
