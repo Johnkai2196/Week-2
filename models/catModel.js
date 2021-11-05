@@ -4,11 +4,11 @@ const promisePool = pool.promise();
 
 const getCat = async (catId) => {
 // TODO find single cat objecty from cats-array and return it
-  console.log(catId)
+  console.log(catId);
   try {
     const [rows] = await promisePool.query(
-        `SELECT * FROM wop_cat where cat_id = ?`,[catId]);
-    console.log('get by id',rows)
+        `SELECT * FROM wop_cat where cat_id = ?`, [catId]);
+    console.log('get by id', rows);
     return rows;
   } catch (e) {
     console.error('error', e.message);
@@ -26,7 +26,21 @@ const getAllCats = async () => {
     console.error('error', e.message);
   }
 };
+
+const insertCat = async (cat) => {
+  try {
+    // TODO add filename
+    const [rows] = await promisePool.execute(
+        'INSERT INTO `wop_cat` (name, weight, owner, birthdate, filename) VALUES (?,?,?,?,?)',
+        [cat.name, cat.weight, cat.owner, cat.birthdate, cat.filename]);
+    console.log('model insert cat', rows);
+    return rows.insertId;
+  } catch (e) {
+    console.error('model insert cat', e.message);
+  }
+};
 module.exports = {
   getAllCats,
   getCat,
+  insertCat,
 };

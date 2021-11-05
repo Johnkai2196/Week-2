@@ -1,10 +1,10 @@
 'use strict';
 // catController
-const {getAllCats, getCat} = require('../models/catModel');
+const {getAllCats, getCat, insertCat} = require('../models/catModel');
 
 const cat_list_get = async (req, res) => {
   const cats = await getAllCats();
-  console.log('all cats',cats)
+  console.log('all cats', cats);
   res.json(cats);
 };
 const cat_get = async (req, res) => {
@@ -12,10 +12,14 @@ const cat_get = async (req, res) => {
   res.json(cat);
 
 };
-const cat_post=(req,res)=> {
-  console.log('add cat data',req.body)
-  res.send('From this endpoint you can add cats.');
-}
+const cat_post = async (req, res) => {
+  console.log('add cat data', req.body);
+  console.log('filename', req.filename);
+  const cat = req.body;
+  cat.filename=req.file.filename;
+  const id = await insertCat(cat);
+  res.send(`cat added with id ${id}`);
+};
 module.exports = {
   cat_list_get,
   cat_get,
