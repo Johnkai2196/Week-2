@@ -7,8 +7,8 @@ const getCat = async (catId) => {
   console.log(catId)
   try {
     const [rows] = await promisePool.query(
-        `SELECT * FROM wop_cat where cat_id =${catId}`);
-    console.log(rows)
+        `SELECT * FROM wop_cat where cat_id = ?`,[catId]);
+    console.log('get by id',rows)
     return rows;
   } catch (e) {
     console.error('error', e.message);
