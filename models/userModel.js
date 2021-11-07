@@ -2,27 +2,6 @@
 
 const pool = require('../database/db');
 const promisePool = pool.promise();
-/*
-const users = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@metropolia.fi',
-    password: '1234',
-  },
-  {
-    id: '2',
-    name: 'Jane Doez',
-    email: 'jane@metropolia.fi',
-    password: 'qwer',
-  },
-];
-
-const getUser = (userId) => {
-// TODO find single cat objecty from cats-array and return it
-  return users.filter(val => val.id === userId);
-};
-*/
 
 const getUser = async (userId) => {
   try {
@@ -34,6 +13,7 @@ const getUser = async (userId) => {
     console.error('error', e.message);
   }
 };
+
 const getAllUsers = async () => {
   try {
     // TODO: do the LEFT (or INNER) JOIN to get owner's name as ownername (from wop_user table).
@@ -67,17 +47,19 @@ const deleteUser = async (userId) => {
   }
 
 };
+
 const updateUser = async (user) => {
   try {
     const [rows] = await promisePool.execute(
         `UPDATE wop_user SET name=?, email=?, password=?  WHERE user_id=?`,
         [user.name, user.email, user.password, user.id]);
-    console.log('model update user',rows);
+    console.log('model update user', rows);
     return rows.affectedRows === 1;
   } catch (e) {
     console.error('model updated user', e.message);
   }
 };
+
 module.exports = {
   getAllUsers,
   getUser,
