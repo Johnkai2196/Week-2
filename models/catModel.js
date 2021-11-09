@@ -1,27 +1,34 @@
 'use strict';
 const pool = require('../database/db');
+const {httpError} = require('../utils/errors');
 const promisePool = pool.promise();
 
-const getCat = async (catId) => {
+const getCat = async (catId, next) => {
 // TODO find single cat objecty from cats-array and return it
   console.log(catId);
   try {
     const [rows] = await promisePool.query(
-        `SELECT * FROM wop_cat where cat_id = ?`, [catId]);
+        `SELECT cat_id, owner, wop_cat.name AS name, weight, birthdate, filename, wop_user.name AS ownername FROM wop_cat INNER JOIN wop_user ON owner = user_id WHERE cat_id = ?`,
+        [catId]);
     console.log('get by id', rows);
-    return rows;
+    return rows[0];
   } catch (e) {
     console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 
-const getAllCats = async () => {
+const getAllCats = async (next) => {
   try {
     // TODO: do the LEFT (or INNER) JOIN to get owner's name as ownername (from wop_user table).
-    const [rows] = await promisePool.query('SELECT * FROM wop_cat');
+    const [rows] = await promisePool.query(
+        'SELECT cat_id, owner, wop_cat.name AS name, weight, birthdate, filename, wop_user.name AS ownername FROM wop_cat INNER JOIN wop_user ON owner = user_id');
     return rows;
   } catch (e) {
     console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 
