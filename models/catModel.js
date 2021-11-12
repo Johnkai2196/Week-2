@@ -32,7 +32,7 @@ const getAllCats = async (next) => {
   }
 };
 
-const insertCat = async (cat) => {
+const insertCat = async (cat,next) => {
   try {
     // TODO add filename
     const [rows] = await promisePool.execute(
@@ -41,22 +41,26 @@ const insertCat = async (cat) => {
     console.log('model insert cat', rows);
     return rows.insertId;
   } catch (e) {
-    console.error('model insert cat', e.message);
+    console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 
-const deleteCat = async (catId) => {
+const deleteCat = async (catId,next) => {
   try {
     const [rows] = await promisePool.execute(
         'DELETE FROM wop_cat WHERE cat_id=?', [catId]);
     console.log('model delete cat', rows);
     return true;
   } catch (e) {
-    console.error('model delete cat', e.message);
+    console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 
-const updateCat = async (cat) => {
+const updateCat = async (cat,next) => {
   try {
     const [rows] = await promisePool.execute(
         `UPDATE wop_cat SET name=?, weight=?, owner=?, birthdate=?  WHERE cat_id=?`,
@@ -64,7 +68,9 @@ const updateCat = async (cat) => {
     console.log('model update cat', rows);
     return rows.affectedRows === 1;
   } catch (e) {
-    console.error('model updated cat', e.message);
+    console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 

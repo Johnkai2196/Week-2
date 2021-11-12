@@ -28,7 +28,7 @@ const getAllUsers = async (next) => {
   }
 };
 
-const insertUser = async (user) => {
+const insertUser = async (user, next) => {
   try {
     const [rows] = await promisePool.execute(
         'INSERT INTO `wop_user` (name, email, password) VALUES (?,?,?)',
@@ -36,23 +36,27 @@ const insertUser = async (user) => {
     console.log('model insert user', rows);
     return rows.insertId;
   } catch (e) {
-    console.error('model insert user', e.message);
+    console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 
-const deleteUser = async (userId) => {
+const deleteUser = async (userId, next) => {
   try {
     const [rows] = await promisePool.execute(
         'DELETE FROM wop_user WHERE user_id=?', [userId]);
     console.log('model delete user', rows);
     return true;
   } catch (e) {
-    console.error('model delete user', e.message);
+    console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 
 };
 
-const updateUser = async (user) => {
+const updateUser = async (user, next) => {
   try {
     const [rows] = await promisePool.execute(
         `UPDATE wop_user SET name=?, email=?, password=?  WHERE user_id=?`,
@@ -60,7 +64,9 @@ const updateUser = async (user) => {
     console.log('model update user', rows);
     return rows.affectedRows === 1;
   } catch (e) {
-    console.error('model updated user', e.message);
+    console.error('error', e.message);
+    const err = httpError('Sql error', 500);
+    next(err);
   }
 };
 
