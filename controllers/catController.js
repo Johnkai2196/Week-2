@@ -6,7 +6,7 @@ const {httpError} = require('../utils/errors');
 const {validationResult} = require('express-validator');
 
 const cat_list_get = async (req, res, next) => {
-  const cats = await getAllCats();
+  const cats = await getAllCats(next);
   console.log('all cats', cats);
   if (cats.length > 0) {
     res.json(cats);
@@ -43,7 +43,7 @@ const cat_post = async (req, res, next) => {
   }
   const cat = req.body;
   cat.filename = req.file.filename;
-  const id = await insertCat(cat);
+  const id = await insertCat(cat,next);
   res.json({message: `cat added with id ${id} `, cat_id: id});
 
 };
@@ -53,9 +53,9 @@ const cat_delete = async (req, res) => {
   res.json({message: `Cat deleted:${deleted}`});
 };
 
-const cat_update = async (req, res) => {
+const cat_update = async (req, res,next) => {
   console.log('controller update cat', req.body);
-  const updated = await updateCat(req.body);
+  const updated = await updateCat(req.body,next);
   console.log(updated);
   res.json({message: `Cat updated: ${updated}`});
 };

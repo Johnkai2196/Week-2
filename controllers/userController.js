@@ -6,7 +6,7 @@ const {httpError} = require('../utils/errors');
 const {validationResult} = require('express-validator');
 
 const user_list_get = async (req, res, next) => {
-  const users = await getAllUsers();
+  const users = await getAllUsers(next);
   console.log('all users', users);
   if (users.length > 0) {
     res.json(users);
@@ -17,8 +17,9 @@ const user_list_get = async (req, res, next) => {
 };
 
 const user_get = async (req, res, next) => {
-  const user = await getUser(req.params.userId);
+  const user = await getUser(req.params.userId, next);
   if (user) {
+    delete user.password;
     res.json(user);
     return;
   }
@@ -36,19 +37,19 @@ const user_post = async (req, res, next) => {
     return;
   }
   const user = req.body;
-  const id = await insertUser(user);
-  res.send(`cat added with id ${id}`);
+  const id = await insertUser(user, next);
+  res.send(`user added with id ${id}`);
   res.json(id);
 };
 
-const user_delete = async (req, res) => {
-  const deleted = await deleteUser(req.params.userId);
+const user_delete = async (req, res, next) => {
+  const deleted = await deleteUser(req.params.userId, next);
   res.json({message: `user deleted:${deleted}`});
 };
 
-const user_update = async (req, res) => {
+const user_update = async (req, res, next) => {
   console.log('controller update user', req.body);
-  const updated = await updateUser(req.body);
+  const updated = await updateUser(req.body, next);
   console.log(updated);
   res.json({message: `user updated: ${updated}`});
 };
