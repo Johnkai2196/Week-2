@@ -34,7 +34,7 @@ const cat_post = async (req, res, next) => {
     next(err);
     return;
   }
-  console.log('add cat data', req.body);
+  console.log('add cat data', req.body, req.user);
   console.log('filename', req.file);
   if (!req.file) {
     const err = httpError('Invalid file', 400);
@@ -43,7 +43,8 @@ const cat_post = async (req, res, next) => {
   }
   const cat = req.body;
   cat.filename = req.file.filename;
-  const id = await insertCat(cat,next);
+  cat.owner = req.user.user_id;
+  const id = await insertCat(cat, next);
   res.json({message: `cat added with id ${id} `, cat_id: id});
 
 };
@@ -53,9 +54,9 @@ const cat_delete = async (req, res) => {
   res.json({message: `Cat deleted:${deleted}`});
 };
 
-const cat_update = async (req, res,next) => {
+const cat_update = async (req, res, next) => {
   console.log('controller update cat', req.body);
-  const updated = await updateCat(req.body,next);
+  const updated = await updateCat(req.body, next);
   console.log(updated);
   res.json({message: `Cat updated: ${updated}`});
 };
