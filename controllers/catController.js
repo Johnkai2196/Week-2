@@ -6,7 +6,7 @@ const {httpError} = require('../utils/errors');
 const {validationResult} = require('express-validator');
 
 const cat_list_get = async (req, res, next) => {
-  const cats = await getAllCats(next);
+  const cats = await getAllCats(next, req);
   console.log('all cats', cats);
   if (cats.length > 0) {
     res.json(cats);
@@ -49,14 +49,14 @@ const cat_post = async (req, res, next) => {
 
 };
 
-const cat_delete = async (req, res) => {
-  const deleted = await deleteCat(req.params.catId);
+const cat_delete = async (req, res, next) => {
+  const deleted = await deleteCat(req.params.catId, next, req.user.user_id);
   res.json({message: `Cat deleted:${deleted}`});
 };
 
 const cat_update = async (req, res, next) => {
   console.log('controller update cat', req.body);
-  const updated = await updateCat(req.body, next);
+  const updated = await updateCat(req.body, next, req.user.user_id);
   console.log(updated);
   res.json({message: `Cat updated: ${updated}`});
 };
