@@ -17,7 +17,7 @@ const cat_list_get = async (req, res, next) => {
 };
 
 const cat_get = async (req, res, next) => {
-  const cat = await getCat(req.params.catId, next);
+  const cat = await getCat(req.params.catId, next, req);
   if (cat) {
     res.json(cat);
     return;
@@ -50,13 +50,15 @@ const cat_post = async (req, res, next) => {
 };
 
 const cat_delete = async (req, res, next) => {
-  const deleted = await deleteCat(req.params.catId, next, req.user.user_id);
+  const deleted = await deleteCat(req.params.catId, next, req.user.user_id,
+      req.user.role);
   res.json({message: `Cat deleted:${deleted}`});
 };
 
 const cat_update = async (req, res, next) => {
   console.log('controller update cat', req.body);
-  const updated = await updateCat(req.body, next, req.user.user_id);
+  const updated = await updateCat(req.body, next, req.user.user_id,
+      req.user.role);
   console.log(updated);
   res.json({message: `Cat updated: ${updated}`});
 };

@@ -4,10 +4,18 @@ const pool = require('../database/db');
 const {httpError} = require('../utils/errors');
 const promisePool = pool.promise();
 
-const getUser = async (userId, next) => {
+const getUser = async (userId, next, id, role) => {
   try {
-    const [rows] = await promisePool.query(
-        `SELECT user_id,name,email FROM wop_user WHERE user_id = ?`, [userId]);
+    let rows;
+    if (role == 0) {
+      [rows] = await promisePool.query(
+          `SELECT user_id,name,email FROM wop_user WHERE user_id = ?`,
+          [userId]);
+    } else if (role == 1) {
+      [rows] = await promisePool.query(
+          `SELECT user_id,name,email FROM wop_user WHERE user_id = ? AND user_id=?`,
+          [userId, id]);
+    }
     console.log('get by id', rows);
     return rows[0];
   } catch (e) {
@@ -17,10 +25,17 @@ const getUser = async (userId, next) => {
   }
 };
 
-const getAllUsers = async (next) => {
+const getAllUsers = async (next, role, user) => {
   try {
-    const [rows] = await promisePool.query(
-        'SELECT user_id,name,email FROM wop_user');
+    let rows;
+    console.log(user);
+    if (role == 0) {
+      [rows] = await promisePool.query(
+          'SELECT user_id,name,email FROM wop_user');
+    } else if (role == 1) {
+      [rows] = await promisePool.query(
+          'SELECT user_id,name,email FROM wop_user Where user_id=?', [user]);
+    }
     return rows;
   } catch (e) {
     console.error('error', e.message);
@@ -43,12 +58,18 @@ const insertUser = async (user, next) => {
   }
 };
 
-const deleteUser = async (userId, next) => {
+const deleteUser = async (userId, next, id, role) => {
   try {
-    const [rows] = await promisePool.execute(
-        'DELETE FROM wop_user WHERE user_id=?', [userId]);
+    let rows;
+    if (role == 0) {
+      [rows] = await promisePool.execute(
+          'DELETE FROM wop_user WHERE user_id=?', [userId]);
+    } else if (role == 1) {
+      [rows] = await promisePool.execute(
+          'DELETE FROM wop_user WHERE user_id=? AND user_id=?', [userId, id]);
+    }
     console.log('model delete user', rows);
-    return true;
+    return rows.affectedRows === 1;
   } catch (e) {
     console.error('error', e.message);
     const err = httpError('Sql error', 500);
@@ -57,11 +78,18 @@ const deleteUser = async (userId, next) => {
 
 };
 
-const updateUser = async (user, next) => {
+const updateUser = async (user, next, id, role) => {
   try {
-    const [rows] = await promisePool.execute(
-        `UPDATE wop_user SET name=?, email=?, password=?  WHERE user_id=?`,
-        [user.name, user.email, user.password, user.id]);
+    let rows;
+    if (role == 0) {
+      [rows] = await promisePool.execute(
+          `UPDATE wop_user SET name=?, email=?, password=?  WHERE user_id=?`,
+          [user.name, user.email, user.password, user.id]);
+    } else if (role == 1) {
+      [rows] = await promisePool.execute(
+          `UPDATE wop_user SET name=?, email=?, password=?  WHERE user_id=? AND user_id=?`,
+          [user.name, user.email, user.password, user.id, id]);
+    }
     console.log('model update user', rows);
     return rows.affectedRows === 1;
   } catch (e) {
