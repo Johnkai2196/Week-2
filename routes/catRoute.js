@@ -9,7 +9,7 @@ const fileFilter = (req, file, cb) => {
   }
   cb(null, false);
 };
-const upload = multer({dest: './upload/',fileFilter});
+const upload = multer({dest: './upload/', fileFilter});
 const {cat_list_get, cat_get, cat_post, cat_delete, cat_update} = require(
     '../controllers/catController');
 const {body} = require('express-validator');
@@ -21,11 +21,10 @@ router.route('/').
         body('name').notEmpty(),
         body('birthdate').isDate(),
         body('weight').isNumeric().notEmpty(),
-        body('owner').isNumeric().notEmpty(),
+
         cat_post,
-    ).
+    );
+
+router.route('/:catId').get(cat_get).delete(cat_delete).
     put(cat_update);
-
-router.route('/:catId').get(cat_get).delete(cat_delete);
-
 module.exports = router;
