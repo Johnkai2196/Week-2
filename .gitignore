@@ -109,6 +109,8 @@ dist
  README.md
  # ignore content of uploads folder
 upload/*
-
+ # ignore content of thumbnails folder
+thumbnails/*
  # except one (empty) file to have the folder in version control
 !upload/.gitkeep
+!thumbnails/.gitkeep

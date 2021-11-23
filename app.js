@@ -4,7 +4,8 @@ const express = require('express');
 const cors = require('cors');
 const catRoute = require('./routes/catRoute');
 const usersRoute = require('./routes/userRoute');
-const authRoute = require('../../Basic Concepts of Web Technology/Week-2/routes/authRoute');
+const authRoute = require(
+    '../../Basic Concepts of Web Technology/Week-2/routes/authRoute');
 const {httpError} = require('./utils/errors');
 const passport = require('./utils/pass');
 
@@ -17,6 +18,8 @@ app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
 app.use(passport.initialize());
+app.use(express.static('upload'));
+app.use('/thumbnails', express.static('thumbnails'));
 
 app.use('/auth', authRoute);
 app.use('/cat', passport.authenticate('jwt', {session: false}), catRoute);

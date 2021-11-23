@@ -4,6 +4,9 @@ const {getAllCats, getCat, insertCat, deleteCat, updateCat} = require(
     '../models/catModel');
 const {httpError} = require('../utils/errors');
 const {validationResult} = require('express-validator');
+const {makeThumbnail} = require('../utils/resize');
+const {json} = require('express');
+const {getCoordinates} = require('../utils/imageMeta');
 
 const cat_list_get = async (req, res, next) => {
   const cats = await getAllCats(next, req);
@@ -35,18 +38,37 @@ const cat_post = async (req, res, next) => {
     return;
   }
   console.log('add cat data', req.body, req.user);
-  console.log('filename', req.file);
   if (!req.file) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
   }
-  const cat = req.body;
-  cat.filename = req.file.filename;
-  cat.owner = req.user.user_id;
-  const id = await insertCat(cat, next);
-  res.json({message: `cat added with id ${id} `, cat_id: id});
+  try {
+    const coords = await getCoordinates(req.file.path);
+    req.body.coords = JSON.stringify(coords);
+  } catch (e) {
+    req.body.coords = '[24,60]';
+  }
 
+  try {
+
+    const thumb = await makeThumbnail(req.file.path, req.file.filename);
+    const cat = req.body;
+    cat.filename = req.file.filename;
+    cat.owner = req.user.user_id;
+
+    const id = await insertCat(cat, next);
+
+    if (thumb) {
+      res.json({message: `cat added with id ${id} `, cat_id: id});
+    }
+
+  } catch (e) {
+    console.log('cat_post error', e.message);
+    const err = httpError('Error uploading cat', 400);
+    next(err);
+    return;
+  }
 };
 
 const cat_delete = async (req, res, next) => {
