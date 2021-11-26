@@ -114,3 +114,8 @@ thumbnails/*
  # except one (empty) file to have the folder in version control
 !upload/.gitkeep
 !thumbnails/.gitkeep
+#Ignore tls certificate and private key
+
+ssl-cert.pem
+ssl-key.pem
+certrequest.csr
