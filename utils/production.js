@@ -1,10 +1,7 @@
 'use strict';
+
 module.exports = (app, port) => {
-  app.enable('trusty proxy');
-// Add a handler to inspect the req.secure flag (see
-// http://expressjs.com/api#req.secure). This allows us
-// to know whether the request was via http or https.
-// https://github.com/aerwin/https-redirect-demo/blob/master/server.js
+  app.enable('trust proxy');
   app.use((req, res, next) => {
     if (req.secure) {
       // request was via https, so do no special handling
