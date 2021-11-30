@@ -6,7 +6,7 @@ const bcrypt= require('bcryptjs')
 const catRoute = require('./routes/catRoute');
 const usersRoute = require('./routes/userRoute');
 const authRoute = require(
-    '../../Basic Concepts of Web Technology/Week-2/routes/authRoute');
+    './routes/authRoute');
 const {httpError} = require('./utils/errors');
 const passport = require('./utils/pass');
 const app = express();
