@@ -30,39 +30,43 @@ const cat_get = async (req, res, next) => {
 };
 
 const cat_post = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log('cat_post validation', errors.array());
-    const err = httpError('data not valid', 400);
-    next(err);
-    return;
-  }
   console.log('add cat data', req.body, req.user);
+  console.log('filename', req.file);
+
+  const cat = req.body;
+  cat.filename = req.file.filename;
+
   if (!req.file) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
   }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.error('Set post validation', errors.array());
+    const err = httpError(`data not valid`, 400);
+    next(err);
+    return;
+  }
+
   try {
     const coords = await getCoordinates(req.file.path);
     req.body.coords = JSON.stringify(coords);
   } catch (e) {
-    req.body.coords = '[24,60]';
+    console.error('image coords error', e.message);
+    req.body.coords = '[24, 60]]';
   }
 
   try {
-
     const thumb = await makeThumbnail(req.file.path, req.file.filename);
     const cat = req.body;
-    cat.filename = req.file.filename;
     cat.owner = req.user.user_id;
-
-    const id = await insertCat(cat, next);
+    cat.message = `cat added with id: ${await insertCat(cat, next)}`;
 
     if (thumb) {
-      res.json({message: `cat added with id ${id} `, cat_id: id});
+      res.json(cat);
     }
-
   } catch (e) {
     console.log('cat_post error', e.message);
     const err = httpError('Error uploading cat', 400);
