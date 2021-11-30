@@ -11,10 +11,10 @@ const options = {
   cert: sslcert,
 };
 
-const httpsRedirect = http.createServer((req, res) => {
+const httpsRedirect = (req, res) => {
   res.writeHead(301, {'Location': 'https://localhost:8000' + req.url});
   res.end();
-})
+}
 
 module.exports = (app, httpsPort, httpPort) => {
   https.createServer(options, app).listen(httpsPort);
