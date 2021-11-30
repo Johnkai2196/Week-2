@@ -9,6 +9,7 @@
   "author": "Johnkai Cortez",
   "license": "GPL-3.0",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "exif": "^0.6.0",
     "express": "^4.17.1",
