@@ -11,7 +11,7 @@ const getCoordinates = (imgFile) => { // imgFile = full path to uploaded image
           reject(error);
         } else {
           console.log('getCordination', exifData);
-          if (!exifData.gps.GPSLatidute) {
+          if (!exifData.gps.GPSLatitude) {
             resolve([24, 60]);
             return;
           }
